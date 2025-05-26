@@ -1,0 +1,61 @@
+// DataProcessor_test.cpp
+
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include "MockDatabase.h"
+#include "DataProcessor.h"
+
+using ::testing::Return;
+using ::testing::_;
+
+TEST(DataProcessorTest, InitializeSuccess) {
+    MockDatabase mockDb;
+    
+    EXPECT_CALL(mockDb, connect("valid_connection_string"))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    DataProcessor processor(&mockDb);
+    
+    EXPECT_TRUE(processor.initialize("valid_connection_string"));
+}
+
+TEST(DataProcessorTest, InitializeFailure) {
+    MockDatabase mockDb;
+    
+    EXPECT_CALL(mockDb, connect("invalid_connection_string"))
+        .Times(1)
+        .WillOnce(Return(false));
+
+    DataProcessor processor(&mockDb);
+    
+    EXPECT_FALSE(processor.initialize("invalid_connection_string"));
+}
+
+TEST(DataProcessorTest, GetDataReturnsResults) {
+    MockDatabase mockDb;
+    
+    std::vector<std::string> expectedResults = {"row1", "row2"};
+    
+    EXPECT_CALL(mockDb, query("SELECT * FROM table"))
+        .Times(1)
+        .WillOnce(Return(expectedResults));
+
+    DataProcessor processor(&mockDb);
+    
+    auto results = processor.getData("SELECT * FROM table");
+    
+    EXPECT_EQ(results.size(), 2);
+    EXPECT_EQ(results[0], "row1");
+}
+
+TEST(DataProcessorTest, CleanupCallsDisconnect) {
+    MockDatabase mockDb;
+    
+    EXPECT_CALL(mockDb, disconnect())
+        .Times(1);
+
+    DataProcessor processor(&mockDb);
+    
+    processor.cleanup();
+}
