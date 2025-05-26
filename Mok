@@ -1,0 +1,15 @@
+// MockDatabase.h
+#ifndef MOCKDATABASE_H
+#define MOCKDATABASE_H
+
+#include "Database.h"
+#include <gmock/gmock.h>
+
+class MockDatabase : public IDatabase {
+public:
+    MOCK_METHOD(bool, connect, (const std::string& connectionString), (override));
+    MOCK_METHOD(std::vector<std::string>, query, (const std::string& sql), (override));
+    MOCK_METHOD(void, disconnect, (), (override));
+};
+
+#endif // MOCKDATABASE_H
