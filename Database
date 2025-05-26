@@ -1,0 +1,29 @@
+// DataProcessor.h
+#ifndef DATAPROCESSOR_H
+#define DATAPROCESSOR_H
+
+#include "Database.h"
+#include <string>
+#include <vector>
+
+class DataProcessor {
+public:
+    explicit DataProcessor(IDatabase* db) : database_(db) {}
+
+    bool initialize(const std::string& connectionString) {
+        return database_->connect(connectionString);
+    }
+
+    std::vector<std::string> getData(const std::string& queryStr) {
+        return database_->query(queryStr);
+    }
+
+    void cleanup() {
+        database_->disconnect();
+    }
+
+private:
+    IDatabase* database_;
+};
+
+#endif // DATAPROCESSOR_H
