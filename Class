@@ -1,0 +1,42 @@
+// Database.h
+#ifndef DATABASE_H
+#define DATABASE_H
+
+#include <string>
+#include <vector>
+
+// Интерфейс для подключения к базе данных
+class IDatabase {
+public:
+    virtual ~IDatabase() = default;
+
+    // Метод для подключения к базе данных
+    virtual bool connect(const std::string& connectionString) = 0;
+
+    // Метод для выполнения запроса и получения результатов
+    virtual std::vector<std::string> query(const std::string& sql) = 0;
+
+    // Метод для отключения от базы данных
+    virtual void disconnect() = 0;
+};
+
+// Реализация реального соединения (может быть пустой или реальной)
+class Database : public IDatabase {
+public:
+    bool connect(const std::string& connectionString) override {
+        // Реальная логика подключения
+        // Для примера возвращаем true
+        return true;
+    }
+
+    std::vector<std::string> query(const std::string& sql) override {
+        // Реальная логика выполнения запроса
+        return {"result1", "result2"};
+    }
+
+    void disconnect() override {
+        // Реальная логика отключения
+    }
+};
+
+#endif // DATABASE_H
